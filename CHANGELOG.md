@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.1 — 2026-10-22
+
+- Removed the custom in-panel update checker. Plugin updates use Omarchy's
+  standard `omarchy plugin update` flow, which shows the diff, validates the
+  manifest, and rescans.
+- Removed the panel's version/update footer and the plugin-specific update IPC
+  methods.
+
 ## 2.0.0 — 2026-10-22
 
 - **Breaking:** renamed the plugin ID from `markbusai.opencode-usage` to

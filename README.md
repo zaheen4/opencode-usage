@@ -55,17 +55,15 @@ history does not need to be rebuilt.
 
 ### Updates
 
-Open the panel and use **Check for updates**. The check contacts the remote only
-when you click it; there is no background update polling. If a fast-forward is
-available, **Update now** runs Omarchy's validated update flow (fast-forward,
-manifest validation, and plugin rescan). From a terminal you can run the same
-update directly:
+Use Omarchy's standard plugin updater:
 
 ```bash
 omarchy plugin update zaheen4.opencode-usage
 ```
 
-Updates fast-forward only, so uncommitted local changes can block them. See
+It fetches, shows the diff, fast-forwards, validates the manifest, and rescans.
+To update every git-managed plugin, run `omarchy plugin update`. Updates are
+fast-forward only, so uncommitted local changes can block them. See
 [CHANGELOG.md](CHANGELOG.md) for the current changes.
 
 Remove the widget with:
@@ -151,7 +149,7 @@ counts only, never conversation content.
 - Bar icon: left = panel, right = launch `omarchy-agent --pick`, middle = refresh.
 - Panel: `j`/`k` scroll, `r` or Enter refresh, Tab moves to the neighboring
   bar panel, Esc closes.
-- IPC: `omarchy-shell zaheen4.opencode-usage <open|close|toggle|refresh|next|checkUpdates|updatePlugin|updateStatus>`.
+- IPC: `omarchy-shell zaheen4.opencode-usage <open|close|toggle|refresh|next>`.
 
 ## License
 
