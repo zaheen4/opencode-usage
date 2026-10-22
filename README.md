@@ -3,6 +3,12 @@
 One bar icon and one panel that shows the tokens you have spent in
 [OpenCode](https://opencode.ai), read from OpenCode's local database.
 
+> **Fork:** This is an independent fork of
+> [markbus-ai/omarchy-opencode-usage](https://github.com/markbus-ai/omarchy-opencode-usage).
+> The original plugin listing and its `markbusai.opencode-usage` ID remain
+> upstream. This fork uses the new permanent ID `zaheen4.opencode-usage`; it is
+> a new plugin, not a drop-in update for the original.
+
 `Panel.qml` owns the bar button and the popup; `Main.qml` owns the scanner
 fan-out and the optional cross-device aggregation; `providers/` holds the
 provider adapter; `scripts/opencode_usage_scanner.py` reads the SQLite
@@ -25,11 +31,27 @@ never run OpenCode.
 ## Install
 
 ```bash
-omarchy plugin add https://github.com/zaheen4/omarchy-opencode-usage.git --enable --yes
+omarchy plugin add https://github.com/zaheen4/opencode-usage.git --enable --yes
 ```
 
 The widget joins the bar's default layout at the next shell reload
 (`omarchy-restart-shell`).
+
+### Migrating from the original plugin
+
+Omarchy has no in-place plugin rename. If you previously installed the original
+`markbusai.opencode-usage`, remove it and add this plugin as a new plugin:
+
+```bash
+omarchy plugin remove markbusai.opencode-usage --yes
+omarchy plugin add https://github.com/zaheen4/opencode-usage.git --enable --yes
+```
+
+Settings are stored per plugin ID and are not migrated automatically. Reapply
+any custom settings with `omarchy bar set zaheen4.opencode-usage ...` and move
+the widget back to your preferred bar section if needed. The usage cache at
+`~/.cache/omarchy/opencode-usage.json` is shared across the rename, so your
+history does not need to be rebuilt.
 
 ### Updates
 
@@ -40,7 +62,7 @@ manifest validation, and plugin rescan). From a terminal you can run the same
 update directly:
 
 ```bash
-omarchy plugin update markbusai.opencode-usage
+omarchy plugin update zaheen4.opencode-usage
 ```
 
 Updates fast-forward only, so uncommitted local changes can block them. See
@@ -49,7 +71,7 @@ Updates fast-forward only, so uncommitted local changes can block them. See
 Remove the widget with:
 
 ```bash
-omarchy plugin remove markbusai.opencode-usage
+omarchy plugin remove zaheen4.opencode-usage
 ```
 
 ## Data source
@@ -63,7 +85,7 @@ default location follows the same resolution OpenCode itself uses:
 Set an explicit override in the widget settings with:
 
 ```bash
-omarchy bar set markbusai.opencode-usage providers '{"opencode": {"enabled": true, "dbPath": "/custom/path/opencode.db"}}' --json
+omarchy bar set zaheen4.opencode-usage providers '{"opencode": {"enabled": true, "dbPath": "/custom/path/opencode.db"}}' --json
 ```
 
 OpenCode v2 stores sessions in `session_v2` and messages in `session_message`;
@@ -94,13 +116,13 @@ assistant response that day. If you delete or import sessions and want that list
 recomputed exactly, run the scanner once with `--rebuild` (about 0.2 s):
 
 ```bash
-python3 ~/.config/omarchy/plugins/markbusai.opencode-usage/scripts/opencode_usage_scanner.py --rebuild
+python3 ~/.config/omarchy/plugins/zaheen4.opencode-usage/scripts/opencode_usage_scanner.py --rebuild
 ```
 
 ## Settings
 
 Settings live in the widget's entry in `~/.config/omarchy/shell.json`. Set
-them with `omarchy bar set markbusai.opencode-usage <key> <value>`:
+them with `omarchy bar set zaheen4.opencode-usage <key> <value>`:
 
 | Key | Default | What it does |
 |---|---|---|
@@ -115,8 +137,8 @@ them with `omarchy bar set markbusai.opencode-usage <key> <value>`:
 Numbers need `--json`, or they land in `shell.json` as strings:
 
 ```bash
-omarchy bar set markbusai.opencode-usage refreshIntervalSec 3600 --json
-omarchy bar set markbusai.opencode-usage syncDir '~/Sync/opencode-usage'
+omarchy bar set zaheen4.opencode-usage refreshIntervalSec 3600 --json
+omarchy bar set zaheen4.opencode-usage syncDir '~/Sync/opencode-usage'
 ```
 
 With `syncMode` on, every `*.json` snapshot in `syncDir` is merged, so today,
@@ -129,9 +151,10 @@ counts only, never conversation content.
 - Bar icon: left = panel, right = launch `omarchy-agent --pick`, middle = refresh.
 - Panel: `j`/`k` scroll, `r` or Enter refresh, Tab moves to the neighboring
   bar panel, Esc closes.
-- IPC: `omarchy-shell markbusai.opencode-usage <open|close|toggle|refresh|next|checkUpdates|updatePlugin|updateStatus>`.
+- IPC: `omarchy-shell zaheen4.opencode-usage <open|close|toggle|refresh|next|checkUpdates|updatePlugin|updateStatus>`.
 
 ## License
 
-MIT. The OpenCode mark is a trademark of its respective owner and is used
-here to identify the tool this widget reports on.
+MIT. Original work copyright (c) 2026 markbus-ai. Fork modifications copyright
+(c) 2026 Mir Zaheen Waseet (zaheen4). The OpenCode mark is a trademark of its
+respective owner and is used here to identify the tool this widget reports on.

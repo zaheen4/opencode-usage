@@ -7,8 +7,8 @@ import qs.Ui
 
 Panel {
   id: root
-  moduleName: "markbusai.opencode-usage"
-  ipcTarget: "markbusai.opencode-usage"
+  moduleName: "zaheen4.opencode-usage"
+  ipcTarget: "zaheen4.opencode-usage"
   manageIpc: false
 
   readonly property color foreground: bar ? bar.foreground : Color.foreground

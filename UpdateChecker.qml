@@ -9,8 +9,8 @@ Item {
   id: root
   visible: false
 
-  property string pluginId: "markbusai.opencode-usage"
-  property string pluginVersion: "1.1.0"
+  property string pluginId: "zaheen4.opencode-usage"
+  property string pluginVersion: "2.0.0"
   property bool checking: false
   property bool updating: false
   property bool updateAvailable: false

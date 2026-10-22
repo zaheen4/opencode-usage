@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.0.0 — 2026-10-22
+
+- **Breaking:** renamed the plugin ID from `markbusai.opencode-usage` to
+  `zaheen4.opencode-usage` and moved it to its own repository,
+  `zaheen4/opencode-usage`.
+- Omarchy has no in-place plugin rename. Existing installs must remove the old
+  plugin and add this one as a new plugin; settings are not migrated
+  automatically.
+- Added explicit upstream attribution for the original
+  `markbus-ai/omarchy-opencode-usage` project. The original MIT copyright is
+  preserved, and fork modifications are copyright Mir Zaheen Waseet.
+
 ## 1.1.0 — 2026-10-22
 
 - Read OpenCode v2 databases (`session_v2` / `session_message`) as well as the
