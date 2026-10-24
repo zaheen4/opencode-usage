@@ -375,6 +375,7 @@ Panel {
             visible: root.providers.length === 0
             width: parent.width
             topPadding: Style.space(24)
+            textFormat: Text.PlainText
             text: "No OpenCode usage found.\nRun `opencode` once to create its usage database."
             color: root.dim
             font.family: root.fontFamily
@@ -435,6 +436,7 @@ Panel {
               anchors.verticalCenter: parent.verticalCenter
               anchors.leftMargin: Style.space(12)
               anchors.rightMargin: Style.space(12)
+              textFormat: Text.PlainText
               text: root.provider ? String(root.provider.authHelpText || "") : ""
               color: root.dim
               font.family: root.fontFamily
@@ -546,6 +548,7 @@ Panel {
             visible: text !== ""
             width: parent.width
             topPadding: Style.space(2)
+            textFormat: Text.PlainText
             text: root.footerText()
             color: root.dim
             font.family: root.fontFamily
@@ -573,6 +576,7 @@ Panel {
 
       Text {
         id: limitLabel
+        textFormat: Text.PlainText
         text: limitRow.window ? limitRow.window.title : ""
         color: root.foreground
         font.family: root.fontFamily
@@ -583,6 +587,7 @@ Panel {
 
       Text {
         id: limitValue
+        textFormat: Text.PlainText
         text: limitRow.window && limitRow.window.percent >= 0
           ? Math.round(limitRow.window.percent * 100) + "%"
           : "—"
@@ -603,6 +608,7 @@ Panel {
     Text {
       id: resetText
       width: parent.width
+      textFormat: Text.PlainText
       text: {
         var remainingMs = root.resetMsFor(limitRow.window)
         return remainingMs > 0 ? "Resets in " + root.formatDuration(remainingMs) : ""
@@ -656,6 +662,7 @@ Panel {
 
     Text {
       id: dayLabel
+      textFormat: Text.PlainText
       text: root.dayLabel(dayRow.day ? dayRow.day.date : "", dayRow.today)
       color: dayRow.today ? root.foreground : root.dim
       font.family: root.fontFamily
@@ -693,6 +700,7 @@ Panel {
 
     Text {
       id: dayValue
+      textFormat: Text.PlainText
       text: usage.formatTokenCount(dayRow.day ? Number(dayRow.day.messageCount || 0) : 0)
       color: dayRow.today ? root.foreground : root.dim
       font.family: root.fontFamily
@@ -748,6 +756,7 @@ Panel {
 
     Text {
       id: modelName
+      textFormat: Text.PlainText
       text: modelRow.row ? modelRow.row.name : ""
       color: root.foreground
       font.family: root.fontFamily
@@ -762,6 +771,7 @@ Panel {
 
     Text {
       id: modelTokens
+      textFormat: Text.PlainText
       text: modelRow.row ? usage.formatTokenCount(modelRow.row.total) : ""
       color: root.dim
       font.family: root.fontFamily

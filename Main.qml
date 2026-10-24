@@ -65,6 +65,9 @@ Item {
   property bool syncRunning: false
   property bool syncRequestedWhileRunning: false
   property string syncStatusText: ""
+  readonly property int syncMaxFileBytes: 1048576
+  readonly property int syncMaxTotalBytes: 16777216
+  readonly property int syncMaxFiles: 64
   property int syncDeviceCount: syncConfigured() && aggregateData && aggregateData.deviceCount ? Number(aggregateData.deviceCount) : 0
 
   onSyncEnabledChanged: syncSettingsChanged()
@@ -203,7 +206,31 @@ Item {
       finishSyncRun()
       return
     }
-    var script = "dir=$0; [[ -d \"$dir\" ]] || exit 0; shopt -s nullglob; for f in \"$dir\"/*.json; do [[ -f \"$f\" ]] || continue; printf '===%s===\\n' \"$f\"; cat \"$f\"; printf '\\n=== EOM ===\\n'; done"
+    // The sync folder is shared with other machines, so everything read from
+    // it is treated as untrusted input: cap each file, the file count, and the
+    // total bytes before anything reaches QML.
+    var script = [
+      "dir=$0",
+      "max_file=" + root.syncMaxFileBytes,
+      "max_total=" + root.syncMaxTotalBytes,
+      "max_files=" + root.syncMaxFiles,
+      "[[ -d \"$dir\" ]] || exit 0",
+      "shopt -s nullglob",
+      "total=0",
+      "count=0",
+      "for f in \"$dir\"/*.json; do",
+      "  [[ -f \"$f\" ]] || continue",
+      "  (( count >= max_files )) && break",
+      "  size=$(stat -c %s -- \"$f\" 2>/dev/null) || continue",
+      "  (( size > max_file )) && continue",
+      "  (( total + size > max_total )) && break",
+      "  total=$(( total + size ))",
+      "  count=$(( count + 1 ))",
+      "  printf '===%s===\\n' \"$f\"",
+      "  head -c \"$size\" -- \"$f\"",
+      "  printf '\\n=== EOM ===\\n'",
+      "done"
+    ].join("; ")
     syncScanProcess.command = ["bash", "-c", script, root.syncEffectiveDir]
     syncScanProcess.running = true
   }

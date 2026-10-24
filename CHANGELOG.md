@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.0.2 — 2026-10-24
+
+- Bounded synced aggregation input. Snapshot files over 1 MiB are skipped, at
+  most 64 files and 16 MiB total are read, and each file is read to its
+  measured size, so a shared sync folder cannot exhaust the shell's memory.
+- Every panel text element now uses `Text.PlainText`, so model names, status
+  strings, and synced snapshot data are never interpreted as rich text.
+
 ## 2.0.1 — 2026-10-22
 
 - Removed the custom in-panel update checker. Plugin updates use Omarchy's
