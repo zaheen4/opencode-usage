@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "zaheen4.opencode-usage",
   "name": "OpenCode Usage",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "author": "Mir Zaheen Waseet (zaheen4)",
   "license": "MIT",
   "description": "OpenCode token usage and models in a native Omarchy bar panel. Independent fork of markbus-ai/omarchy-opencode-usage.",

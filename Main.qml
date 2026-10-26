@@ -65,6 +65,9 @@ Item {
   property bool syncRunning: false
   property bool syncRequestedWhileRunning: false
   property string syncStatusText: ""
+  property string syncWritePayload: ""
+  readonly property string pythonInterpreterPath: "/usr/bin/python3"
+  readonly property string syncWriterPath: String(Qt.resolvedUrl("scripts/opencode_usage_snapshot.py")).replace("file://", "")
   readonly property int syncMaxFileBytes: 1048576
   readonly property int syncMaxTotalBytes: 16777216
   readonly property int syncMaxFiles: 64
@@ -127,12 +130,30 @@ Item {
     }
   }
 
-  FileView {
-    id: syncSnapshotFile
-    path: root.syncSnapshotPath
-    watchChanges: false
-    atomicWrites: true
-    printErrors: false
+  // Snapshots are written by a helper instead of FileView. QSaveFile follows
+  // an existing destination symlink, so a sync peer could point the snapshot
+  // name at a file outside the shared folder and have it overwritten. The
+  // helper writes a new file and renames it over the destination entry.
+  Process {
+    id: syncWriteProcess
+    running: false
+    stdinEnabled: false
+
+    onStarted: root.writeSyncPayload()
+    onRunningChanged: root.updateSyncRunning()
+    onExited: function(exitCode) {
+      if (exitCode !== 0) {
+        if (root.syncConfigured()) root.syncStatusText = "Usage sync write failed"
+        root.finishSyncRun()
+        return
+      }
+      root.startSyncScan()
+    }
+
+    stderr: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: if (text.trim() !== "") console.warn("opencode-usage/sync", text.trim())
+    }
   }
 
   FileView {
@@ -171,7 +192,8 @@ Item {
   }
 
   function updateSyncRunning() {
-    root.syncRunning = syncMkdirProcess.running || syncScanProcess.running
+    root.syncRunning = syncMkdirProcess.running || syncWriteProcess.running
+      || syncScanProcess.running
   }
 
   function scheduleSync() {
@@ -197,8 +219,16 @@ Item {
       finishSyncRun()
       return
     }
-    syncSnapshotFile.setText(JSON.stringify(localSnapshot(), null, 2) + "\n")
-    Qt.callLater(root.startSyncScan)
+    syncWritePayload = JSON.stringify(localSnapshot(), null, 2) + "\n"
+    syncWriteProcess.stdinEnabled = true
+    syncWriteProcess.command = [root.pythonInterpreterPath, "-S", root.syncWriterPath, root.syncSnapshotPath]
+    syncWriteProcess.running = true
+  }
+
+  function writeSyncPayload() {
+    syncWriteProcess.write(syncWritePayload)
+    // Closing stdin lets the helper's read reach EOF and write the snapshot.
+    syncWriteProcess.stdinEnabled = false
   }
 
   function startSyncScan() {
@@ -230,7 +260,7 @@ Item {
       "  head -c \"$size\" -- \"$f\"",
       "  printf '\\n=== EOM ===\\n'",
       "done"
-    ].join("; ")
+    ].join("\n")
     syncScanProcess.command = ["bash", "-c", script, root.syncEffectiveDir]
     syncScanProcess.running = true
   }

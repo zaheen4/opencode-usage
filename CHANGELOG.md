@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.0.3 — 2026-10-26
+
+- **Security:** sync snapshots no longer follow a destination symlink. The sync
+  folder is shared, so a peer could point the snapshot name at an owner-writable
+  file outside it and have the next refresh overwrite that file. Snapshots are
+  now written by `scripts/opencode_usage_snapshot.py`, which writes a new file
+  next to the destination, fsyncs it, and renames it over the destination entry,
+  leaving any symlink target untouched.
+- Fixed the bounded sync scan introduced in 2.0.2. Its generated shell script was
+  invalid, so the scan silently read nothing; snapshots are merged again. A new
+  regression test rebuilds the script from `Main.qml`, lints it, and checks the
+  per-file, file-count, and total-byte limits.
+- Replaced `preview.png` with a current 1200×675 screenshot and linked it from
+  the README.
+
 ## 2.0.2 — 2026-10-24
 
 - Bounded synced aggregation input. Snapshot files over 1 MiB are skipped, at

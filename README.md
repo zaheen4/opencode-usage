@@ -3,6 +3,8 @@
 One bar icon and one panel that shows the tokens you have spent in
 [OpenCode](https://opencode.ai), read from OpenCode's local database.
 
+![OpenCode Usage panel open on the Omarchy bar](preview.png)
+
 > **Fork:** This is an independent fork of
 > [markbus-ai/omarchy-opencode-usage](https://github.com/markbus-ai/omarchy-opencode-usage).
 > The original plugin listing and its `markbusai.opencode-usage` ID remain
@@ -150,6 +152,18 @@ counts only, never conversation content.
 - Panel: `j`/`k` scroll, `r` or Enter refresh, Tab moves to the neighboring
   bar panel, Esc closes.
 - IPC: `omarchy-shell zaheen4.opencode-usage <open|close|toggle|refresh|next>`.
+
+## Development
+
+The scanner, the snapshot writer, and the sync scan script each have a
+regression test that needs only bash, `jq`, `sqlite3`, and Python 3:
+
+```bash
+bash test/scanner-test.sh
+bash test/snapshot-writer-test.sh
+bash test/sync-scan-test.sh
+omarchy plugin validate .
+```
 
 ## License
 
